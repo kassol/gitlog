@@ -19,6 +19,7 @@ export function verifyToken(token: string) {
     }
     return result && result.t === AUTH_TOKEN;
   } catch (err) {
+    console.log(err);
     return false;
   }
 }

@@ -5,7 +5,6 @@ import { getCategories, getPages, getAllPosts } from "@/lib/github";
 export default async function Home() {
   const categories = await getCategories();
   const pages = await getPages();
-  const mergedNav = [...categories, ...pages];
   const posts = await getAllPosts();
 
   return (
