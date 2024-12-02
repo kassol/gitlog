@@ -1,9 +1,12 @@
 import { login } from "@/app/lib/actions";
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
-export default async function Login(params: {
-  searchParams: { error: string };
+export default async function Login(props: {
+  // params: Params;
+  searchParams: SearchParams;
 }) {
-  const { error } = await params.searchParams;
+  const searchParams = await props.searchParams;
+  const error = searchParams.error;
   console.log(error);
   return (
     <div className="h-full w-full flex flex-col items-center justify-center">

@@ -2,10 +2,12 @@ import { getPostById } from "@/lib/github";
 import type { Metadata } from "next";
 import Article from "@/app/components/Article";
 
+type Params = Promise<{ slug: string }>;
+
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Params;
 }): Promise<Metadata> {
   const slug = (await params).slug;
   const post = await getPostById(Number(slug));
