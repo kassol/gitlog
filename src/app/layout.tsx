@@ -33,7 +33,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${cejk.className} h-full overflow-y-auto mx-auto px-4 flex flex-col items-center leading-relaxed tracking-wide text-gray-800 xl:w-1/2 lg:w-2/3 md:w-3/4 sm:w-4/5`}
+        className={`${cejk.className} ${inter.className} h-full overflow-y-auto mx-auto px-4 flex flex-col items-center leading-relaxed tracking-wide text-gray-800 xl:w-1/2 lg:w-2/3 md:w-3/4 sm:w-4/5`}
       >
         <div className="w-full flex flex-row items-center justify-between">
           <h1 className="text-2xl text-gray-600 my-6">
