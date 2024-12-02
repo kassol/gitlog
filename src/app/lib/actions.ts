@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { createToken } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { updatePostById } from "@/lib/github";
 
 const accessCode = process.env.ACCESS_CODE || "";
 
@@ -32,4 +33,12 @@ export async function logout() {
   cookieStore.delete("token");
   revalidatePath("/");
   redirect("/");
+}
+
+export async function updatePost(id: number, formData: FormData) {
+  const title = formData.get("title");
+  const body = formData.get("body");
+  await updatePostById(Number(id), title as string, body as string);
+  revalidatePath(`/post/${id}`);
+  redirect(`/post/${id}`);
 }

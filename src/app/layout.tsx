@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { logout } from "@/app/lib/actions";
 import { isLoggedIn } from "@/lib/auth";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const inter = Inter({ subsets: ["latin"] });
 const cejk = localFont({
@@ -39,12 +40,7 @@ export default async function RootLayout({
           <h1 className="text-2xl text-gray-600 my-6">
             <Link href="/">{BlogConfig.title}</Link>
           </h1>
-          {login && <button onClick={logout}>Logout</button>}
-          {!login && (
-            <Link href="/login">
-              <button>Login</button>
-            </Link>
-          )}
+          {login && <Button onClick={logout}>Logout</Button>}
         </div>
         <div className="w-full flex-grow flex flex-col items-center justify-center">
           {children}

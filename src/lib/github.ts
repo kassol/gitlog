@@ -22,6 +22,11 @@ const markdownToHtml = async (markdown: string) => {
   return result.toString();
 };
 
+export async function getRawMarkdownPreview(markdown: string) {
+  const matterResult = matter(markdown);
+  return await markdownToHtml(matterResult.content);
+}
+
 export async function getLabels() {
   const { data } = await octokit.issues.listLabelsForRepo({
     owner,
@@ -117,7 +122,7 @@ export async function getAllPosts() {
     );
 }
 
-export async function getPostById(id: number) {
+export async function getPostById(id: number, processBody = true) {
   const { data } = await octokit.issues.get({
     owner,
     repo,
@@ -129,8 +134,21 @@ export async function getPostById(id: number) {
   const created_at: string = updated ? updated : date;
   data.created_at = created_at ? created_at : data.created_at;
   data.created_at = dayjs(data.created_at).utc().format("YYYY-MM-DD HH:mm:ss");
-  const processedBody = await markdownToHtml(matterResult.content);
-  data.body = processedBody;
+  if (processBody) {
+    const processedBody = await markdownToHtml(matterResult.content);
+    data.body = processedBody;
+  }
+  return data;
+}
+
+export async function updatePostById(id: number, title: string, body: string) {
+  const { data } = await octokit.issues.update({
+    owner,
+    repo,
+    issue_number: id,
+    title,
+    body,
+  });
   return data;
 }
 

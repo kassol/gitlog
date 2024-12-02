@@ -17,11 +17,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function Post({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function Post({ params }: { params: Params }) {
   const slug = (await params).slug;
   const post = await getPostById(Number(slug));
 
