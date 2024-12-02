@@ -158,7 +158,22 @@ export async function getPostsByCategory(category: string) {
     repo,
     labels: `${categoryLabelPrefix}${category}`,
   });
-  return data;
+  for (const post of data) {
+    const matterResult = matter(post.body ?? "");
+    const date: string = String(matterResult.data.date) || "";
+    const updated: string = String(matterResult.data.updated) || "";
+    const created_at: string = updated ? updated : date;
+    post.created_at = created_at ? created_at : post.created_at;
+    post.created_at = dayjs(post.created_at)
+      .utc()
+      .format("YYYY-MM-DD HH:mm:ss");
+    const processedBody = await markdownToHtml(matterResult.content);
+    post.body = processedBody;
+  }
+  return data.sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
 }
 
 export async function getPostsByLabel(label: string) {
