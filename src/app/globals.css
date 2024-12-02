@@ -2,20 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+html {
+  @apply m-0 p-0 h-full w-full;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.nav a {
+  @apply hover:text-red-500;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.markdown-body {
+  @apply text-xl;
+}
+
+.markdown-body h2 {
+  @apply text-2xl font-bold leading-loose border-b border-solid border-gray-200 my-4;
+}
+
+.markdown-body a {
+  @apply text-red-500;
+}
+
+.markdown-body a:hover {
+  @apply underline;
+}
+
+.markdown-body li {
+  @apply leading-loose;
+}
+
+.markdown-body ul {
+  @apply list-disc list-inside;
+}
+
+.markdown-body ul ul {
+  @apply list-[circle] list-inside;
+}
+
+.markdown-body ul ul ul {
+  @apply list-[square] list-inside;
+}
+
+.markdown-body li li {
+  @apply pl-4;
+}
+
+.markdown-body li li li {
+  @apply pl-8;
+}
+
+.markdown-body li li li li {
+  @apply pl-12;
 }
