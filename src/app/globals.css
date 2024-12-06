@@ -64,11 +64,11 @@ html {
 }
 
 .markdown-body {
-  @apply text-xl;
+  @apply text-xl leading-loose;
 }
 
 .markdown-body h2 {
-  @apply text-2xl font-bold leading-loose border-b border-solid border-gray-200 my-4;
+  @apply text-2xl font-bold leading-loose border-b border-solid border-gray-200;
 }
 
 .markdown-body a {
@@ -77,10 +77,6 @@ html {
 
 .markdown-body a:hover {
   @apply underline;
-}
-
-.markdown-body li {
-  @apply leading-loose;
 }
 
 .markdown-body ul {

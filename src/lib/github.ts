@@ -17,6 +17,40 @@ const octokit = new Octokit({ auth: token });
 const categoryLabelPrefix = "category/";
 const pageLabelPrefix = "page/";
 
+type XOR<T, U> = T | U extends object
+  ? (Without<T, U> & U) | (Without<U, T> & T)
+  : T | U;
+type OneOf<T extends any[]> = T extends [infer Only]
+  ? Only
+  : T extends [infer A, infer B, ...infer Rest]
+  ? OneOf<[XOR<A, B>, ...Rest]>
+  : never;
+
+interface PostType {
+  title: string;
+  body: string | null | undefined;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+  number: number;
+  labels: OneOf<
+    [
+      string,
+      {
+        /** Format: int64 */
+        id?: number;
+        node_id?: string;
+        /** Format: uri */
+        url?: string;
+        name?: string;
+        description?: string | null;
+        color?: string | null;
+        default?: boolean;
+      }
+    ]
+  >[];
+}
+
 const markdownToHtml = async (markdown: string) => {
   const result = await remark().use(remarkGfm).use(html).process(markdown);
   return result.toString();
@@ -95,16 +129,29 @@ export async function getAllPosts() {
 
       const date: string = String(matterResult.data.date) || "";
       const updated: string = String(matterResult.data.updated) || "";
-      const created_at: string = updated ? updated : date;
+      const postData: PostType = {
+        title: post.title,
+        body: post.body,
+        description: String(matterResult.data.description),
+        created_at: post.created_at,
+        updated_at: post.updated_at,
+        number: post.number,
+        labels: post.labels,
+      };
 
-      post.created_at = created_at ? created_at : post.created_at;
-      post.created_at = dayjs(post.created_at)
+      postData.created_at = date ? date : postData.created_at;
+      postData.created_at = dayjs(postData.created_at)
+        .utc()
+        .format("YYYY-MM-DD HH:mm:ss");
+      postData.updated_at = updated ? updated : postData.updated_at;
+      postData.updated_at = dayjs(postData.updated_at)
         .utc()
         .format("YYYY-MM-DD HH:mm:ss");
       const processedBody = await markdownToHtml(matterResult.content);
-      post.body = processedBody;
+      postData.body = processedBody;
+
+      allPosts.push(postData);
     }
-    allPosts.push(...response.data);
   }
   return allPosts
     .filter((post) =>
@@ -131,14 +178,24 @@ export async function getPostById(id: number, processBody = true) {
   const matterResult = matter(data.body ?? "");
   const date: string = String(matterResult.data.date) || "";
   const updated: string = String(matterResult.data.updated) || "";
-  const created_at: string = updated ? updated : date;
-  data.created_at = created_at ? created_at : data.created_at;
+  data.created_at = date ? date : data.created_at;
   data.created_at = dayjs(data.created_at).utc().format("YYYY-MM-DD HH:mm:ss");
+  data.updated_at = updated ? updated : data.updated_at;
+  data.updated_at = dayjs(data.updated_at).utc().format("YYYY-MM-DD HH:mm:ss");
   if (processBody) {
     const processedBody = await markdownToHtml(matterResult.content);
     data.body = processedBody;
   }
-  return data;
+  const postData: PostType = {
+    title: data.title,
+    body: data.body,
+    description: String(matterResult.data.description),
+    created_at: data.created_at,
+    updated_at: data.updated_at,
+    number: data.number,
+    labels: data.labels,
+  };
+  return postData;
 }
 
 export async function updatePostById(id: number, title: string, body: string) {
@@ -153,24 +210,42 @@ export async function updatePostById(id: number, title: string, body: string) {
 }
 
 export async function getPostsByCategory(category: string) {
-  const { data } = await octokit.issues.listForRepo({
+  const allData = [];
+  const iterater = octokit.paginate.iterator(octokit.issues.listForRepo, {
     owner,
     repo,
     labels: `${categoryLabelPrefix}${category}`,
+    per_page: 100,
   });
-  for (const post of data) {
-    const matterResult = matter(post.body ?? "");
-    const date: string = String(matterResult.data.date) || "";
-    const updated: string = String(matterResult.data.updated) || "";
-    const created_at: string = updated ? updated : date;
-    post.created_at = created_at ? created_at : post.created_at;
-    post.created_at = dayjs(post.created_at)
-      .utc()
-      .format("YYYY-MM-DD HH:mm:ss");
-    const processedBody = await markdownToHtml(matterResult.content);
-    post.body = processedBody;
+  for await (const response of iterater) {
+    for (const post of response.data) {
+      const matterResult = matter(post.body ?? "");
+      const date: string = String(matterResult.data.date) || "";
+      const updated: string = String(matterResult.data.updated) || "";
+      const postData: PostType = {
+        title: post.title,
+        body: post.body,
+        description: String(matterResult.data.description),
+        created_at: post.created_at,
+        updated_at: post.updated_at,
+        number: post.number,
+        labels: post.labels,
+      };
+      postData.created_at = date ? date : post.created_at;
+      postData.created_at = dayjs(postData.created_at)
+        .utc()
+        .format("YYYY-MM-DD HH:mm:ss");
+      postData.updated_at = updated ? updated : post.updated_at;
+      postData.updated_at = dayjs(postData.updated_at)
+        .utc()
+        .format("YYYY-MM-DD HH:mm:ss");
+      const processedBody = await markdownToHtml(matterResult.content);
+      postData.body = processedBody;
+
+      allData.push(postData);
+    }
   }
-  return data.sort(
+  return allData.sort(
     (a, b) =>
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );

@@ -7,6 +7,7 @@ export default async function Article({
     number: number;
     title: string;
     body?: string | null;
+    description: string | null;
     created_at: string;
   };
 }) {
@@ -25,7 +26,13 @@ export default async function Article({
           </Link>
         )}
       </div>
-      <div className="flex-1 flex flex-col px-4">
+      {data.description && (
+        <div className="flex flex-col text-gray-600 mt-4 text-base leading-loose p-4 border border-solid border-gray-200">
+          <div>AI Summary</div>
+          {data.description}
+        </div>
+      )}
+      <div className="flex-1 flex flex-col px-4 mt-4">
         {data.body && (
           <div dangerouslySetInnerHTML={{ __html: data.body }}></div>
         )}
