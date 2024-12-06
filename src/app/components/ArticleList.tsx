@@ -3,10 +3,10 @@ export default function ArticleList({
   articles,
 }: {
   articles: Array<{
-    id: number;
     number: number;
     title: string;
     body?: string | null;
+    description: string | null;
     created_at: string;
   }>;
 }) {
@@ -15,7 +15,7 @@ export default function ArticleList({
       {articles.map((post) => (
         <div
           className="flex flex-row items-baseline justify-between px-2 py-1 hover:animate-pulse"
-          key={post.id}
+          key={post.number}
         >
           <Link href={`/post/${post.number}`}>{post.title}</Link>
           <p className="text-sm text-gray-400">{String(post.created_at)}</p>

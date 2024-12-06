@@ -17,6 +17,7 @@ const octokit = new Octokit({ auth: token });
 const categoryLabelPrefix = "category/";
 const pageLabelPrefix = "page/";
 
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 type XOR<T, U> = T | U extends object
   ? (Without<T, U> & U) | (Without<U, T> & T)
   : T | U;
@@ -280,7 +281,16 @@ export async function getLatestPostByPage(page: string) {
     .format("YYYY-MM-DD HH:mm:ss");
   const processedBody = await markdownToHtml(matterResult.content);
   pageData.body = processedBody;
-  return pageData;
+  const postData: PostType = {
+    title: pageData.title,
+    body: pageData.body,
+    description: String(matterResult.data.description),
+    created_at: pageData.created_at,
+    updated_at: pageData.updated_at,
+    number: pageData.number,
+    labels: pageData.labels,
+  };
+  return postData;
 }
 
 export async function createPost(
