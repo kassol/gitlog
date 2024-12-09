@@ -7,6 +7,7 @@ import { logout } from "@/app/lib/actions";
 import { isLoggedIn } from "@/lib/auth";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 const cejk = localFont({
