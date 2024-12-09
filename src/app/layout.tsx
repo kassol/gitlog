@@ -49,6 +49,7 @@ export default async function RootLayout({
         <div className="flex-grow-0 text-sm text-gray-400 py-4">
           Copyright &copy; {year}. All rights reserved.
         </div>{" "}
+        <SpeedInsights />
       </body>
     </html>
   );
