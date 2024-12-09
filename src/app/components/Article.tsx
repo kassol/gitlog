@@ -9,6 +9,7 @@ export default async function Article({
     body?: string | null;
     description: string | null;
     created_at: string;
+    updated_at: string;
   };
 }) {
   const login = await isLoggedIn();
@@ -16,7 +17,7 @@ export default async function Article({
     <div className="flex-1 flex flex-col justify-between markdown-body">
       <h1 className="text-2xl text-gray-600">{data.title}</h1>
       <div className="w-full flex flex-row justify-end text-gray-400 text-sm">
-        {data.created_at}
+        {data.updated_at}
         {login && (
           <Link
             href={`/post/edit/${data.number}`}
