@@ -71,6 +71,10 @@ html {
   @apply text-2xl font-bold leading-loose border-b border-solid border-gray-200;
 }
 
+.markdown-body blockquote {
+  @apply text-gray-600 mt-6 mb-2 pl-2 border-l-4 border-gray-200 bg-gray-100 italic;
+}
+
 .markdown-body a {
   @apply text-red-500;
 }
