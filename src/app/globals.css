@@ -67,8 +67,16 @@ html {
   @apply text-xl leading-loose;
 }
 
+.markdown-body p {
+  @apply mt-2;
+}
+
 .markdown-body h2 {
-  @apply text-2xl font-bold leading-loose border-b border-solid border-gray-200;
+  @apply text-2xl font-bold leading-loose border-b border-solid border-gray-200 mt-4;
+}
+
+.markdown-body h3 {
+  @apply text-xl font-bold leading-loose border-b border-solid border-gray-200 mt-2;
 }
 
 .markdown-body blockquote {
@@ -83,8 +91,12 @@ html {
   @apply underline;
 }
 
+.markdown-body ol {
+  @apply list-decimal list-inside pl-2;
+}
+
 .markdown-body ul {
-  @apply list-disc list-outside;
+  @apply list-disc list-inside pl-2;
 }
 
 .markdown-body ul ul {
